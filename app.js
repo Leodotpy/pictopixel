@@ -313,5 +313,5 @@ document.getElementById('downloadLarge').addEventListener('click', downloadLarge
 document.getElementById('downloadLargeContext').addEventListener('click', downloadLarge);
 
 document.getElementById("gitfooter").addEventListener('click', function (e) {
-    window.open("https://github.com/Leodotpy").focus();
+    window.open("https://github.com/Leodotpy/PicToPixel").focus();
 });
