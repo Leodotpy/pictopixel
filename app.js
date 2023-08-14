@@ -48,6 +48,8 @@ function resetFilters() {
     document.getElementById('saturation').value = "100";
     document.getElementById('paletteSize').value = "256";
 
+    sliderValues();
+
     // Redraw the original image
     imageCtx.clearRect(0, 0, imageCanvas.width, imageCanvas.height);
     imageCtx.drawImage(originalImage, 0, 0, originalImage.width, originalImage.height);
@@ -59,6 +61,25 @@ function resetFilters() {
         applyFilters();
     });
 });
+
+function sliderValues(){
+    var sliders = document.querySelectorAll('input[type="range"]');
+    
+    sliders.forEach(function(slider) {
+        // This will set the value on page load
+        var valueDisplay = slider.nextElementSibling;
+        valueDisplay.textContent = slider.value;
+
+        // Event listener to update the value when the slider changes
+        slider.addEventListener('input', function() {
+            valueDisplay.textContent = slider.value;
+        });
+    });
+}
+
+document.addEventListener("DOMContentLoaded", sliderValues);
+
+
 
 function loadImage(file) {
     let reader = new FileReader();
@@ -89,6 +110,7 @@ function loadImage(file) {
             document.getElementById("canvasContainer").style.display = "inherit";
 
             dropzone.style.cursor = "default";
+
         };
         originalImage.src = event.target.result;
     };
@@ -228,7 +250,7 @@ let lastY = 0;
 let translateX = 0;
 let translateY = 0;
 const DEFAULT_TRANSITION_DURATION = "0.2s";
-const DRAG_TRANSITION_DURATION = "0.0s"; // shorter duration for a snappy feel during drag
+const DRAG_TRANSITION_DURATION = "0.0s";
 imageCanvas.style.willChange = "transform";
 
 document.addEventListener('mousemove', function (e) {
@@ -292,10 +314,9 @@ document.getElementById('loadNew').addEventListener('click', function () {
 
 function downloadSmall() {
     let downscaleFactor = parseFloat(document.getElementById('downscale').value);
-    let downscaledCanvas = downscaleImage(originalImage, downscaleFactor); // Use the new function for downscaling
+    let downscaledCanvas = downscaleImage(originalImage, downscaleFactor);
 
     let link = document.createElement('a');
-    // Convert canvas to a smaller image data URL. You can modify the toDataURL parameters to achieve desired compression.
     link.href = downscaledCanvas.toDataURL('image/png');
     link.download = 'small_image-pictopixel.png';
     link.click()
@@ -315,3 +336,46 @@ document.getElementById('downloadLargeContext').addEventListener('click', downlo
 document.getElementById("gitfooter").addEventListener('click', function (e) {
     window.open("https://github.com/Leodotpy/PicToPixel").focus();
 });
+
+// For the love of coding
+const hearts = ["❤️", "💜", "💙", "💚", "💛", "🧡"];
+let currentIndex = 0;
+let heartscale = 1;
+let resetTimer;
+
+document.getElementById("heart").addEventListener('mouseover', function (e) {
+    // Clear any existing timers when hovered over the heart
+    clearTimeout(resetTimer);
+
+    // Update the index
+    currentIndex = (currentIndex + 1) % hearts.length;
+
+    // Set the new heart color
+    document.getElementById("heart").textContent = hearts[currentIndex];
+    document.getElementById("heart").style.animation = "none";
+    heartscale += 0.1;
+    document.getElementById("heart").style.transform = `scale(${heartscale})`;
+    document.getElementById("heart").style.bottom = `${heartscale * 20}%`;
+});
+
+document.getElementById("heart").addEventListener('mouseout', function (e) {
+    // Start the timer when mouse is out of the heart
+    resetTimer = setTimeout(function() {
+        // Float the heart off the screen
+        document.getElementById("heart").style.transition = "3000ms";
+        document.getElementById("heart").style.bottom = "180vh"; // Ensure it's off screen
+
+        // After 2 seconds (same as the transition time), reset the heart's properties
+        setTimeout(function() {
+            heartscale = 1; // Reset the scale
+            currentIndex = (currentIndex + 1) % hearts.length;
+            document.getElementById("heart").textContent = hearts[currentIndex];
+            document.getElementById("heart").style.transition = "0ms";
+            document.getElementById("heart").style.transform = `scale(${heartscale})`;
+            document.getElementById("heart").style.bottom = "14%";
+            
+        }, 3000);
+    }, 2000);
+});
+
+

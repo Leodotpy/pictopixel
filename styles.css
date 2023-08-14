@@ -55,30 +55,42 @@ body, html {
     transform: translateX(-50%) translateY(2%);
     font-size: 3.1rem;
     text-shadow: 4px -4px 0px #7a7aea, -4px 4px 0px #5151f0, 4px 4px 0px #6464f0, -4px -4px 0px #6464f0;
-    animation: shadowpop 1.2s both;
+    animation: shadowpop 1.8s both;
     letter-spacing: 0em;
     white-space: nowrap;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
     z-index: 2;
 }
-
 
 @keyframes shadowpop {
     0% {
         text-shadow: none;
+        transform: translateX(-50%) translateY(50vh) scale(1.8);
+        text-shadow: 0px -0px 0px #7a7aea;
     }
-    25% {
+    20% {
         text-shadow: 3px -3px 0px #7a7aea;
     }
-    50% {
+    40% {
         text-shadow: 3px -3px 0px #7a7aea, -3px 3px 0px #5151f0;
     }
-    75% {
+    60% {
         text-shadow: 3px -3px 0px #7a7aea, -3px 3px 0px #5151f0, 3px 3px 0px #6464f0;
     }
-    100% {
+    80% {
         text-shadow: 3px -3px 0px #7a7aea, -3px 3px 0px #5151f0, 3px 3px 0px #6464f0, -3px -3px 0px #6464f0;
+        transform: translateX(-50%) translateY(50vh) scale(2);
+    }
+    90%{
+        transform: translateX(-50%) translateY(50vh) scale(2);
+    }
+    100%{
+        transform: translateX(-50%) translateY(2%);
     }
 }
+
 
 @keyframes fadeInDown {
     from {
@@ -100,8 +112,25 @@ body, html {
     justify-content: center;
     cursor: pointer;
     position: absolute;
-    transition: fadeInDownfadeInDown 0.4s ease;
+    /* transition: fadeInDownfadeInDown 0.4s ease; */
+    animation: fadeInDown 3s both;
     z-index: 4;
+}
+
+@keyframes fadeInDown {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    50%{
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 #canvasContainer {
@@ -154,6 +183,27 @@ body, html {
     cursor: pointer;
 }
 
+#heart {
+    transform: scale(1);
+    position: absolute;
+
+    bottom: 14%;
+    right: 45%;
+    animation: float 4s infinite alternate ease-in-out;
+    transition: bottom 80s ease-in-out;
+    transition-duration: 100ms; 
+}
+
+@keyframes float {
+    from {
+        transform: scale(0.8);
+    }
+    to {
+        transform: scale(1.1);
+    }
+}
+
+
 
 #controls {
     position: fixed;
@@ -173,29 +223,34 @@ body, html {
     display: flex;
     align-items: center;
     margin: 10px 0;
+    justify-content: flex-end;
 }
 
 .slider-container label {
-    flex: 1;
-    margin-right: 10px;
+    flex: none;
+    margin-right: 25px;
     white-space: nowrap;
+    width: 100px;
 }
 
-
-input[type="range"] {
-    flex: 2;
-    margin: 0;
+.slider-value {
+    margin-left: 10px;
+    font-weight: bold;
+    width: 40px;
+    text-align: left;
 }
 
 input[type="range"] {
+    flex: none;
     width: 200px;
-    margin: 10px 0;
+    margin: 0;
     appearance: none;
-    background: linear-gradient(90deg, #6464f0 0%, #9090ff 100%); /* Gradient background */
+    background: linear-gradient(90deg, #6464f0 0%, #9090ff 100%);
     height: 5px;
     border-radius: 5px;
     outline: none;
 }
+
 
 input[type="range"]::-webkit-slider-thumb {
     appearance: none;
@@ -215,6 +270,7 @@ input[type="range"]::-moz-range-thumb {
     border-radius: 50%;
     cursor: pointer;
 }
+
 
 button {
     display: inline-block;
