@@ -6,6 +6,9 @@ var controls = document.getElementById('controls');
 
 let statslabel = document.getElementById('statslabel');
 let hasImgLoaded = false;
+let tooltipShown = false;
+let mademove = false;
+
 
 // JS enabled so swap the dropzone text
 dropzone.textContent = "Drop or Click to Load Image";
@@ -58,7 +61,7 @@ function resetFilters() {
 
 ['downscale', 'brightness', 'contrast', 'saturation', 'paletteSize'].forEach((id) => {
     document.getElementById(id).addEventListener('input', function () {
-        applyFilters();
+        renderImageToCanvas();
     });
 });
 
@@ -78,7 +81,6 @@ function sliderValues(){
 }
 
 document.addEventListener("DOMContentLoaded", sliderValues);
-
 
 
 function loadImage(file) {
@@ -101,7 +103,7 @@ function loadImage(file) {
             dropzone.removeEventListener('click', dropzoneClickHandler);
 
             // Draw the original image with filters applied
-            applyFilters();
+            renderImageToCanvas();
 
             hasImgLoaded = true;
 
@@ -118,20 +120,24 @@ function loadImage(file) {
 }
 
 // Filters
-function limitPalette(paletteSize) {
-    let imageData = imageCtx.getImageData(0, 0, imageCanvas.width, imageCanvas.height);
-    let data = imageData.data;
-    let factor = Math.floor(256 / paletteSize);
-
-    // Effect first 3 channels, leave alpha unchanged
-    for (let i = 0; i < data.length; i += 4) {
-        data[i] = Math.floor(data[i] / factor) * factor;
-        data[i + 1] = Math.floor(data[i + 1] / factor) * factor;
-        data[i + 2] = Math.floor(data[i + 2] / factor) * factor;
+function limitPalette(ctx, width, height, paletteSize) {
+    if (paletteSize <= 1) {
+        throw new Error("Palette size should be greater than 1");
     }
 
-    imageCtx.putImageData(imageData, 0, 0);
+    let imageData = ctx.getImageData(0, 0, width, height);
+    let data = imageData.data;
+    let factor = Math.floor(256 / (paletteSize - 1));
+
+    for (let i = 0; i < data.length; i += 4) {
+        data[i] = Math.round(data[i] / factor) * factor;
+        data[i + 1] = Math.round(data[i + 1] / factor) * factor;
+        data[i + 2] = Math.round(data[i + 2] / factor) * factor;
+    }
+
+    ctx.putImageData(imageData, 0, 0);
 }
+
 
 function downscaleImage(image, factor) {
     let scaledWidth = Math.round(image.width / factor);
@@ -147,6 +153,17 @@ function downscaleImage(image, factor) {
 
     return tmpCanvas;
 }
+
+function renderImageToCanvas() {
+    let filteredCanvas = applyFilters();
+
+    // Clear main canvas
+    imageCtx.clearRect(0, 0, filteredCanvas.width, filteredCanvas.height);
+    
+    // Draw the filtered canvas to the main canvas without stretching
+    imageCtx.drawImage(filteredCanvas, 0, 0);
+}
+
 
 // Apply filters with slider values
 function applyFilters() {
@@ -168,10 +185,14 @@ function applyFilters() {
 
     let filterString = `brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%)`;
 
-    imageCtx.clearRect(0, 0, imageCanvas.width, imageCanvas.height);
-    imageCtx.filter = filterString;
-    imageCtx.imageSmoothingEnabled = false;
-    imageCtx.drawImage(tmpCanvas, 0, 0, tmpCanvas.width, tmpCanvas.height, 0, 0, originalImage.width, originalImage.height); // Draw it with the original dimensions
+    let filteredCanvas = document.createElement('canvas');
+    let filteredCtx = filteredCanvas.getContext('2d');
+    filteredCanvas.width = originalImage.width;
+    filteredCanvas.height = originalImage.height;
+    
+    filteredCtx.filter = filterString;
+    filteredCtx.imageSmoothingEnabled = false;
+    filteredCtx.drawImage(tmpCanvas, 0, 0, tmpCanvas.width, tmpCanvas.height, 0, 0, originalImage.width, originalImage.height); // Draw it with the original dimensions
 
     if (tmpCanvas.height > 0 && tmpCanvas.width > 0) {
         statslabel.textContent = `${tmpCanvas.width}x${tmpCanvas.height}`;
@@ -182,8 +203,53 @@ function applyFilters() {
 
     // Limit the color palette
     const paletteSize = parseInt(document.getElementById('paletteSize').value);
-    limitPalette(paletteSize);
+    limitPalette(filteredCtx, filteredCanvas.width, filteredCanvas.height, paletteSize);
+
+    return filteredCanvas;
 }
+
+
+function applyPreset(preset) {
+    switch (preset) {
+        case "gameGuy":
+            document.getElementById('downscale').value = "16";
+            document.getElementById('brightness').value = "110";
+            document.getElementById('contrast').value = "100";
+            document.getElementById('saturation').value = "0";
+            document.getElementById('paletteSize').value = "3";
+            break;
+        case "vintage":
+            document.getElementById('downscale').value = "2";
+            document.getElementById('brightness').value = "90";
+            document.getElementById('contrast').value = "130";
+            document.getElementById('saturation').value = "80";
+            document.getElementById('paletteSize').value = "64";
+            break;
+        case "highContrast":
+            document.getElementById('downscale').value = "1";
+            document.getElementById('brightness').value = "100";
+            document.getElementById('contrast').value = "150";
+            document.getElementById('saturation').value = "100";
+            document.getElementById('paletteSize').value = "256";
+            break;
+        case "desaturated":
+            document.getElementById('downscale').value = "1";
+            document.getElementById('brightness').value = "100";
+            document.getElementById('contrast').value = "100";
+            document.getElementById('saturation').value = "50";
+            document.getElementById('paletteSize').value = "256";
+            break;
+        default:
+            resetFilters();
+            break;
+    }
+    sliderValues();
+    renderImageToCanvas();
+}
+
+document.getElementById('presets').addEventListener('change', function() {
+    applyPreset(this.value);
+});
 
 
 // Background pixels handleing
@@ -242,7 +308,6 @@ document.addEventListener('wheel', function (event) {
 });
 
 
-
 // Handle image dragging
 let dragging = false;
 let lastX = 0;
@@ -274,6 +339,7 @@ imageCanvas.addEventListener('mousedown', function (e) {
     imageCanvas.style.cursor = "move";
     lastX = e.clientX;
     lastY = e.clientY;
+    mademove = true;
 });
 
 document.addEventListener('mouseup', function () {
@@ -291,6 +357,29 @@ document.addEventListener('mouseleave', function () {
 function updateCanvasTransform() {
     imageCanvas.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
 }
+
+// Tooltip for mouse drag and scroll zoom functionality
+let hoverTimeout;
+imageCanvas.addEventListener('mouseover', function() {
+    hoverTimeout = setTimeout(function() {
+        if (!mademove && !tooltipShown) {
+            const tooltip = document.getElementById('tooltip');
+            tooltip.style.display = 'block';
+            setTimeout(() => { 
+                tooltip.style.opacity = '1';
+            }, 20);
+            tooltipShown = true;
+        }
+    }, 1000);
+});
+
+imageCanvas.addEventListener('mouseout', function() {
+    clearTimeout(hoverTimeout); // Clear the timeout if the mouse leaves before 1 second
+    const tooltip = document.getElementById('tooltip');
+    tooltip.style.opacity = '0';
+    // After the fade out completes, set display to 'none'
+    setTimeout(() => tooltip.style.display = 'none', 300); // Transition duration from the CSS
+});
 
 
 // Context menu
@@ -313,23 +402,28 @@ document.getElementById('loadNew').addEventListener('click', function () {
 });
 
 function downloadSmall() {
+    let filteredCanvas = applyFilters();
     let downscaleFactor = parseFloat(document.getElementById('downscale').value);
-    let downscaledCanvas = downscaleImage(originalImage, downscaleFactor);
-
-    let link = document.createElement('a');
-    link.href = downscaledCanvas.toDataURL('image/png');
-    link.download = 'small_image-pictopixel.png';
-    link.click()
+    let downscaledCanvas = downscaleImage(filteredCanvas, downscaleFactor);
+    
+    let downloadLink = document.createElement('a');
+    downloadLink.href = downscaledCanvas.toDataURL('image/png');
+    downloadLink.download = 'filtered-downscaled-image.png';
+    downloadLink.click();
 }
+
+
 document.getElementById('downloadSmall').addEventListener('click', downloadSmall);
 document.getElementById('downloadSmallContext').addEventListener('click', downloadSmall);
 
 function downloadLarge() {
+    let filteredCanvas = applyFilters();
     let link = document.createElement('a');
-    link.href = imageCanvas.toDataURL();
+    link.href = filteredCanvas.toDataURL();
     link.download = 'large_image-pictopixel.png';
     link.click();
 }
+
 document.getElementById('downloadLarge').addEventListener('click', downloadLarge);
 document.getElementById('downloadLargeContext').addEventListener('click', downloadLarge);
 

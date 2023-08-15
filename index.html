@@ -33,7 +33,7 @@
         <span class="slider-value">0</span>
     </div>
     <div class="slider-container">
-        <label for="paletteSize" title="Determines the number of colors in the image palette. Fewer colors result in more stylized images.">Palette Size:</label>
+        <label for="paletteSize" title="Determines the number of colors in the image palette. Fewer colors result in more stylized images."># of colors:</label>
         <input type="range" id="paletteSize" min="2" max="256" step="1" value="256" title="Determines the number of colors in the image palette. Fewer colors result in more stylized images.">
         <span class="slider-value">0</span>
     </div>    
@@ -52,17 +52,31 @@
         <input type="range" id="saturation" min="0" max="200" value="100" title="Adjusts the intensity of colors. Higher values make colors more vibrant.">
         <span class="slider-value">0</span>
     </div>
-    <div class="slider-container">
+    <div class="extras-container">
+        <label for="empty"> </label>
         <label for="zoom">Zoom:</label>
         <button onclick="zoomOut()">-</button>
         <button onclick="zoomReset()">0</button>
-        <button onclick="zoomIn()">+</button>
+        <button onclick="zoomIn()">+</button>  
     </div>
-    <div class="slider-container">
-        <label for="reset"> </label>
-        <button id="resetBtn" title="Reset the slider values.  The image will stay.">Reset</button>
+    <div class="extras-container">
+        <label for="empty"> </label>
+        <label for="presets">Presets:</label>
+        <select id="presets">
+            <option value="default">Default</option>
+            <option value="gameGuy">GameGuy™</option>
+            <option value="vintage">Vintage</option>
+            <option value="highContrast">High Contrast</option>
+            <option value="desaturated">Desaturated</option>
+        </select>
     </div>
-    <div class="slider-container">
+    <div class="extras-container">
+        <label for="empty"> </label>
+        <label for="empty"> </label>
+        <button id="resetBtn" title="Reset the slider values.  The image will stay.">Reset ⟲</button>
+    </div>
+    <div class="extras-container">
+        <label for="empty"> </label>
         <label for="download">Download:</label>
         <button id="downloadSmall" title="Download the pixel accurate edited image.">Small</button>
         <button id="downloadLarge" title="Download the rescaled edited image.">Large</button>
@@ -71,6 +85,9 @@
 
 <div id="canvasContainer">
     <canvas id="canvas"></canvas>
+    <div id="tooltip" style="display: none;">
+        Drag to move image. Scroll to zoom.
+    </div>
 </div>
 
 <a id="statslabel" class="noClick">0</a>
@@ -79,7 +96,6 @@
     <a id="heart" >💜</a>
     <a>on github</a>
 </span>
-
 <div id="customContextMenu" class="controls" style="display: none;">
     <button class="context-button" id="loadNew">Load New Image</button>
     <button class="context-button" id="downloadSmallContext" title="Download the edited image.">Download Small</button>
