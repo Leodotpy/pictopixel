@@ -1,118 +1,139 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta property="og:title" content="Pic To Pixel" />
-    <meta property="og:description" content="An image tool that allows you to quickly and easily perform downscaling, color palette limiting, and other useful pixel art effects." />
+    <meta property="og:description"
+        content="An image tool that allows you to quickly and easily perform downscaling, color palette limiting, and other useful pixel art effects." />
     <meta property="og:url" content="https://leodotpy.github.io/PicToPixel/" />
-    <meta http-equiv="cache-control" content="no-cache"> 
-    <meta http-equiv="expires" content="0"> 
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta http-equiv="expires" content="0">
     <meta http-equiv="pragma" content="no-cache">
     <div id="title" class="noClick">
         Pic To Pixel
-    <!--
+        <!--
         ██████  ██  ██████ ████████  ██████  ██████  ██ ██   ██ ███████ ██      
         ██   ██ ██ ██         ██    ██    ██ ██   ██ ██  ██ ██  ██      ██      
         ██████  ██ ██         ██    ██    ██ ██████  ██   ███   █████   ██      
         ██      ██ ██         ██    ██    ██ ██      ██  ██ ██  ██      ██      
         ██      ██  ██████    ██     ██████  ██      ██ ██   ██ ███████ ███████
-    -->
-    </div> 
+        -->
+    </div>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title>Pic To Pixel | Convert Images to Pixel Art</title>
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@300&display=swap" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@300&display=swap" rel="stylesheet">
 </head>
+
 <body>
-    
-<div id="dropzone" class="noClick">psst... javascript is needed to run this site :D</div>
-<div id="exampleImagesContainer">
-    <a id="exampleImagesContainerTip" style="text-align: center; white-space: nowrap;">Example Images</a>
-    <img src="https://raw.githubusercontent.com/Leodotpy/PicToPixel/main/PicToPixel/res/imgs/example1.png" class="exampleImage" alt="Example 1" data-image-path="https://raw.githubusercontent.com/Leodotpy/PicToPixel/main/PicToPixel/res/imgs/example1.png">
-    <img src="https://raw.githubusercontent.com/Leodotpy/PicToPixel/main/PicToPixel/res/imgs/example2.png" class="exampleImage" alt="Example 2" data-image-path="https://raw.githubusercontent.com/Leodotpy/PicToPixel/main/PicToPixel/res/imgs/example2.png">
-    <img src="https://raw.githubusercontent.com/Leodotpy/PicToPixel/main/PicToPixel/res/imgs/example3.png" class="exampleImage" alt="Example 3" data-image-path="https://raw.githubusercontent.com/Leodotpy/PicToPixel/main/PicToPixel/res/imgs/example3.png">
-</div>
-<div id="controls">
-    <div class="slider-container">
-        <label for="downscale" title="Adjusts the image resolution by decreasing pixel density.">Downscale:</label>
-        <input type="range" id="downscale" min="1" max="64" step="1" value="1" title="Adjusts the image resolution by decreasing pixel density.">
-        <span class="slider-value">0</span>
-    </div>
-    <div class="slider-container">
-        <label for="paletteSize" title="Determines the number of colors in the image palette. Fewer colors result in more stylized images."># of colors:</label>
-        <input type="range" id="paletteSize" min="2" max="256" step="1" value="256" title="Determines the number of colors in the image palette. Fewer colors result in more stylized images.">
-        <span class="slider-value">0</span>
-    </div>    
-    <div class="slider-container">
-        <label for="brightness" title="Adjusts the overall lightness or darkness of the image.">Brightness:</label>
-        <input type="range" id="brightness" min="0" max="200" value="100" title="Adjusts the overall lightness or darkness of the image.">
-        <span class="slider-value">0</span>
-    </div>
-    <div class="slider-container">
-        <label for="contrast" title="Adjusts the difference between the lightest and darkest parts of the image.">Contrast:</label>
-        <input type="range" id="contrast" min="0" max="200" value="100" title="Adjusts the difference between the lightest and darkest parts of the image.">
-        <span class="slider-value">0</span>
-    </div>
-    <div class="slider-container">
-        <label for="saturation" title="Adjusts the intensity of colors. Higher values make colors more vibrant.">Saturation:</label>
-        <input type="range" id="saturation" min="0" max="200" value="100" title="Adjusts the intensity of colors. Higher values make colors more vibrant.">
-        <span class="slider-value">0</span>
-    </div>
-    <div class="extras-container">
-        <label for="empty"> </label>
-        <label for="zoom">Zoom:</label>
-        <button onclick="zoomOut()">-</button>
-        <button onclick="zoomReset()">0</button>
-        <button onclick="zoomIn()">+</button>  
-    </div>
-    <div class="extras-container">
-        <label for="empty"> </label>
-        <label for="presets">Presets:</label>
-        <select id="presets">
-            <option value="default">Default</option>
-            <option value="gameGuy">GameGuy™</option>
-            <option value="vintage">Vintage</option>
-            <option value="highContrast">High Contrast</option>
-            <option value="desaturated">Desaturated</option>
-        </select>
-    </div>
-    <div class="extras-container">
-        <label for="empty"> </label>
-        <label for="empty"> </label>
-        <button id="resetBtn" title="Reset the slider values.  The image will stay.">Reset ⟲</button>
-    </div>
-    <div class="extras-container">
-        <label for="empty"> </label>
-        <label for="download">Download:</label>
-        <button id="downloadSmall" title="Download the pixel accurate edited image.">Small</button>
-        <button id="downloadLarge" title="Download the rescaled edited image.">Large</button>
-    </div>
-</div>
 
-<div id="canvasContainer">
-    <canvas id="canvas"></canvas>
-</div>
-<div id="tooltip" style="display: none;">
-    Drag to move image. Scroll to zoom.
-</div>
+    <div id="dropzone" class="noClick">psst... javascript is needed to run this site :D</div>
+    <div id="exampleImagesContainer">
+        <a id="exampleImagesContainerTip" style="text-align: center; white-space: nowrap;">Example Images</a>
+        <img src="https://raw.githubusercontent.com/Leodotpy/PicToPixel/main/res/imgs/example1.png"
+            class="exampleImage" alt="Example 1"
+            data-image-path="https://raw.githubusercontent.com/Leodotpy/PicToPixel/main/res/imgs/example1.png">
+        <img src="https://raw.githubusercontent.com/Leodotpy/PicToPixel/main/res/imgs/example2.png"
+            class="exampleImage" alt="Example 2"
+            data-image-path="https://raw.githubusercontent.com/Leodotpy/PicToPixel/main/res/imgs/example2.png">
+        <img src="https://raw.githubusercontent.com/Leodotpy/PicToPixel/main/res/imgs/example3.png"
+            class="exampleImage" alt="Example 3"
+            data-image-path="https://raw.githubusercontent.com/Leodotpy/PicToPixel/main/res/imgs/example3.png">
+    </div>
+    <div id="controls">
+        <div class="slider-container">
+            <label for="downscale" title="Adjusts the image resolution by decreasing pixel density.">Downscale:</label>
+            <input type="range" id="downscale" min="1" max="64" step="1" value="1"
+                title="Adjusts the image resolution by decreasing pixel density.">
+            <span class="slider-value">0</span>
+        </div>
+        <div class="slider-container">
+            <label for="paletteSize"
+                title="Determines the number of colors in the image palette. Fewer colors result in more stylized images.">#
+                of colors:</label>
+            <input type="range" id="paletteSize" min="2" max="256" step="1" value="256"
+                title="Determines the number of colors in the image palette. Fewer colors result in more stylized images.">
+            <span class="slider-value">0</span>
+        </div>
+        <div class="slider-container">
+            <label for="brightness" title="Adjusts the overall lightness or darkness of the image.">Brightness:</label>
+            <input type="range" id="brightness" min="0" max="200" value="100"
+                title="Adjusts the overall lightness or darkness of the image.">
+            <span class="slider-value">0</span>
+        </div>
+        <div class="slider-container">
+            <label for="contrast"
+                title="Adjusts the difference between the lightest and darkest parts of the image.">Contrast:</label>
+            <input type="range" id="contrast" min="0" max="200" value="100"
+                title="Adjusts the difference between the lightest and darkest parts of the image.">
+            <span class="slider-value">0</span>
+        </div>
+        <div class="slider-container">
+            <label for="saturation"
+                title="Adjusts the intensity of colors. Higher values make colors more vibrant.">Saturation:</label>
+            <input type="range" id="saturation" min="0" max="200" value="100"
+                title="Adjusts the intensity of colors. Higher values make colors more vibrant.">
+            <span class="slider-value">0</span>
+        </div>
+        <div class="extras-container">
+            <label for="empty"> </label>
+            <label for="zoom">Zoom:</label>
+            <button onclick="zoomOut()">-</button>
+            <button onclick="zoomReset()">0</button>
+            <button onclick="zoomIn()">+</button>
+        </div>
+        <div class="extras-container">
+            <label for="empty"> </label>
+            <label for="presets">Presets:</label>
+            <select id="presets">
+                <option value="default">Default</option>
+                <option value="gameGuy">GameGuy™</option>
+                <option value="vintage">Vintage</option>
+                <option value="highContrast">High Contrast</option>
+                <option value="desaturated">Desaturated</option>
+            </select>
+        </div>
+        <div class="extras-container">
+            <label for="empty"> </label>
+            <label for="empty"> </label>
+            <button id="resetBtn" title="Reset the slider values.  The image will stay.">Reset ⟲</button>
+        </div>
+        <div class="extras-container">
+            <label for="empty"> </label>
+            <label for="download">Download:</label>
+            <button id="downloadSmall" title="Download the pixel accurate edited image.">Small</button>
+            <button id="downloadLarge" title="Download the rescaled edited image.">Large</button>
+        </div>
+    </div>
 
-<a id="statslabel" class="noClick">0</a>
-<span id="gitfooter" class="noClick" style="z-index: 101;">
-    <a style="margin-right: 10px;">Made with</a>
-    <a id="heart" >💜</a>
-    <a>on github</a>
-</span>
-<div id="customContextMenu" class="controls" style="display: none;">
-    <button class="context-button" id="loadNew">Load New Image</button>
-    <button class="context-button" id="downloadSmallContext" title="Download the edited image.">Download Small</button>
-    <button class="context-button" id="downloadLargeContext" title="Download the rescaled edited image.">Download Large</button>
-</div>
+    <div id="canvasContainer">
+        <canvas id="canvas"></canvas>
+    </div>
+    <div id="tooltip" style="display: none;">
+        Drag to move image. Scroll to zoom.
+    </div>
 
-<div class="pixelgrid">
-</div>
+    <a id="statslabel" class="noClick">0</a>
+    <span id="gitfooter" class="noClick" style="z-index: 101;">
+        <a style="margin-right: 10px;">Made with</a>
+        <a id="heart">💜</a>
+        <a>on github</a>
+    </span>
+    <div id="customContextMenu" class="controls" style="display: none;">
+        <button class="context-button" id="loadNew">Load New Image</button>
+        <button class="context-button" id="downloadSmallContext" title="Download the edited image.">Download
+            Small</button>
+        <button class="context-button" id="downloadLargeContext" title="Download the rescaled edited image.">Download
+            Large</button>
+    </div>
+
+    <div class="pixelgrid">
+    </div>
 
 
 </body>
 
 <script src="app.js"></script>
+
 </html>
