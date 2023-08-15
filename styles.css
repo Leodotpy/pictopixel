@@ -18,7 +18,7 @@ body, html {
 
 @font-face {
     font-family: 'silkscreennormal';
-    src: url('res/fonts/slkscr-webfont.woff');
+    src: url('PicToPixel/res/fonts/slkscr-webfont.woff');
 }
 
 .pixelgrid {
