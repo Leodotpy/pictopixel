@@ -38,6 +38,25 @@ document.addEventListener('drop', function (e) {
     }
 });
 
+document.addEventListener("DOMContentLoaded", function () {
+    const exampleImages = document.querySelectorAll('.exampleImage');
+    exampleImages.forEach(function (imageElem) {
+        imageElem.addEventListener('click', function (event) {
+            let imagePath = event.target.getAttribute('data-image-path');
+            fetch(imagePath)
+                .then(response => response.blob())
+                .then(blob => {
+                    loadImage(blob);
+                });
+        });
+        imageElem.addEventListener('contextmenu', function (e) {
+            if (event.target.getAttribute('data-image-path')) {
+                e.preventDefault();
+            }
+        });
+    });
+});
+
 
 document.getElementById('resetBtn').addEventListener('click', function () {
     resetFilters();
@@ -65,16 +84,16 @@ function resetFilters() {
     });
 });
 
-function sliderValues(){
+function sliderValues() {
     var sliders = document.querySelectorAll('input[type="range"]');
-    
-    sliders.forEach(function(slider) {
-        // This will set the value on page load
+
+    sliders.forEach(function (slider) {
+        // Set the value on page load
         var valueDisplay = slider.nextElementSibling;
         valueDisplay.textContent = slider.value;
 
         // Event listener to update the value when the slider changes
-        slider.addEventListener('input', function() {
+        slider.addEventListener('input', function () {
             valueDisplay.textContent = slider.value;
         });
     });
@@ -82,6 +101,10 @@ function sliderValues(){
 
 document.addEventListener("DOMContentLoaded", sliderValues);
 
+const MAX_CANVAS_WIDTH = 800;
+const MAX_CANVAS_HEIGHT = 600;
+const MIN_CANVAS_WIDTH = 100;
+const MIN_CANVAS_HEIGHT = 100;
 
 function loadImage(file) {
     let reader = new FileReader();
@@ -95,10 +118,34 @@ function loadImage(file) {
             imageCanvas.height = originalImage.height;
             imageCtx.clearRect(0, 0, imageCanvas.width, imageCanvas.height);
 
-            // Reset canvas scale
             scale = 1;
+
+            // Scale down if exceeding max dimensions
+            if (imageCanvas.width / imageCanvas.height > MAX_CANVAS_WIDTH / MAX_CANVAS_HEIGHT) {
+                if (imageCanvas.width > MAX_CANVAS_WIDTH) {
+                    scale = MAX_CANVAS_WIDTH / imageCanvas.width;
+                }
+            } else {
+                if (imageCanvas.height > MAX_CANVAS_HEIGHT) {
+                    scale = MAX_CANVAS_HEIGHT / imageCanvas.height;
+                }
+            }
+
+            // Scale up if below min dimensions (using the possibly already scaled values)
+            let newWidth = imageCanvas.width * scale;
+            let newHeight = imageCanvas.height * scale;
+            if (newWidth / newHeight < MIN_CANVAS_WIDTH / MIN_CANVAS_HEIGHT) {
+                if (newWidth < MIN_CANVAS_WIDTH) {
+                    scale = MIN_CANVAS_WIDTH / imageCanvas.width;
+                }
+            } else {
+                if (newHeight < MIN_CANVAS_HEIGHT) {
+                    scale = MIN_CANVAS_HEIGHT / imageCanvas.height;
+                }
+            }
+
             updateCanvasTransform();
-            
+
             // remove click event for dropzone but leave drop dropzone event 
             dropzone.removeEventListener('click', dropzoneClickHandler);
 
@@ -118,6 +165,7 @@ function loadImage(file) {
     };
     reader.readAsDataURL(file);
 }
+
 
 // Filters
 function limitPalette(ctx, width, height, paletteSize) {
@@ -159,7 +207,7 @@ function renderImageToCanvas() {
 
     // Clear main canvas
     imageCtx.clearRect(0, 0, filteredCanvas.width, filteredCanvas.height);
-    
+
     // Draw the filtered canvas to the main canvas without stretching
     imageCtx.drawImage(filteredCanvas, 0, 0);
 }
@@ -189,7 +237,7 @@ function applyFilters() {
     let filteredCtx = filteredCanvas.getContext('2d');
     filteredCanvas.width = originalImage.width;
     filteredCanvas.height = originalImage.height;
-    
+
     filteredCtx.filter = filterString;
     filteredCtx.imageSmoothingEnabled = false;
     filteredCtx.drawImage(tmpCanvas, 0, 0, tmpCanvas.width, tmpCanvas.height, 0, 0, originalImage.width, originalImage.height); // Draw it with the original dimensions
@@ -211,6 +259,9 @@ function applyFilters() {
 
 function applyPreset(preset) {
     switch (preset) {
+        case "default":
+            resetFilters();
+            break;
         case "gameGuy":
             document.getElementById('downscale').value = "16";
             document.getElementById('brightness').value = "110";
@@ -247,7 +298,7 @@ function applyPreset(preset) {
     renderImageToCanvas();
 }
 
-document.getElementById('presets').addEventListener('change', function() {
+document.getElementById('presets').addEventListener('change', function () {
     applyPreset(this.value);
 });
 
@@ -360,12 +411,12 @@ function updateCanvasTransform() {
 
 // Tooltip for mouse drag and scroll zoom functionality
 let hoverTimeout;
-imageCanvas.addEventListener('mouseover', function() {
-    hoverTimeout = setTimeout(function() {
+imageCanvas.addEventListener('mouseover', function () {
+    hoverTimeout = setTimeout(function () {
         if (!mademove && !tooltipShown) {
             const tooltip = document.getElementById('tooltip');
             tooltip.style.display = 'block';
-            setTimeout(() => { 
+            setTimeout(() => {
                 tooltip.style.opacity = '1';
             }, 20);
             tooltipShown = true;
@@ -373,7 +424,7 @@ imageCanvas.addEventListener('mouseover', function() {
     }, 1000);
 });
 
-imageCanvas.addEventListener('mouseout', function() {
+imageCanvas.addEventListener('mouseout', function () {
     clearTimeout(hoverTimeout); // Clear the timeout if the mouse leaves before 1 second
     const tooltip = document.getElementById('tooltip');
     tooltip.style.opacity = '0';
@@ -405,7 +456,7 @@ function downloadSmall() {
     let filteredCanvas = applyFilters();
     let downscaleFactor = parseFloat(document.getElementById('downscale').value);
     let downscaledCanvas = downscaleImage(filteredCanvas, downscaleFactor);
-    
+
     let downloadLink = document.createElement('a');
     downloadLink.href = downscaledCanvas.toDataURL('image/png');
     downloadLink.download = 'filtered-downscaled-image.png';
@@ -447,29 +498,27 @@ document.getElementById("heart").addEventListener('mouseover', function (e) {
     // Set the new heart color
     document.getElementById("heart").textContent = hearts[currentIndex];
     document.getElementById("heart").style.animation = "none";
-    heartscale += 0.1;
+    heartscale += 0.2;
     document.getElementById("heart").style.transform = `scale(${heartscale})`;
     document.getElementById("heart").style.bottom = `${heartscale * 20}%`;
 });
 
 document.getElementById("heart").addEventListener('mouseout', function (e) {
     // Start the timer when mouse is out of the heart
-    resetTimer = setTimeout(function() {
+    resetTimer = setTimeout(function () {
         // Float the heart off the screen
         document.getElementById("heart").style.transition = "3000ms";
         document.getElementById("heart").style.bottom = "180vh"; // Ensure it's off screen
 
         // After 2 seconds (same as the transition time), reset the heart's properties
-        setTimeout(function() {
+        setTimeout(function () {
             heartscale = 1; // Reset the scale
             currentIndex = (currentIndex + 1) % hearts.length;
             document.getElementById("heart").textContent = hearts[currentIndex];
             document.getElementById("heart").style.transition = "0ms";
             document.getElementById("heart").style.transform = `scale(${heartscale})`;
             document.getElementById("heart").style.bottom = "14%";
-            
+
         }, 3000);
     }, 2000);
 });
-
-
