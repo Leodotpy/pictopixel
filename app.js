@@ -562,19 +562,3 @@ document.getElementById("heart").addEventListener('mouseout', function (e) {
         }, 3000);
     }, 2000);
 });
-
-// Fetch total page views from GoatCounter
-function fetchViews() {
-    fetch('https://pixelgoat.goatcounter.com/api/v0/count', {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById('viewCount').textContent = "View Count: " + data.totalHits;
-        })
-        .catch(error => console.error('Error fetching views:', error));
-}
-
-fetchViews();
