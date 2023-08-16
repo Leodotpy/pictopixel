@@ -1,4 +1,4 @@
-*{
+* {
     font-family: 'silkscreennormal';
 }
 
@@ -6,7 +6,8 @@ a {
     text-shadow: -1px 1px 0px #7a7aea;
 }
 
-body, html {
+body,
+html {
     height: 100%;
     margin: 0;
     background-color: #202020;
@@ -33,18 +34,42 @@ body, html {
 
 .pixel {
     background-color: rgba(100, 100, 240, 0.0);
-    aspect-ratio: 1 / 1; /* square shape */
+    aspect-ratio: 1 / 1;
+    /* square shape */
     border-radius: 4px;
     animation: brightnessChange 5s infinite alternate;
     z-index: 0;
 }
 
 @keyframes brightnessChange {
-    0%   { background-color: rgba(100, 100, 240, 0.05); }
-    100% { background-color: rgba(0, 0, 0, 0.0); }
+    0% {
+        background-color: rgba(100, 100, 240, 0.05);
+    }
+
+    100% {
+        background-color: rgba(0, 0, 0, 0.0);
+    }
 }
 
-.noClick, label, .slider-value, img{
+#viewcount {
+    position: absolute;
+    bottom: 32px;
+    overflow: visible;
+    right: -1px;
+    z-index: 20;
+    transform: scale(0.75);
+    user-select: none;
+    font-size: smaller;
+    position: absolute;
+    background: rgba(255, 255, 255, 0.048);
+    padding: 5px 10px;
+    border-radius: 10px;
+}
+
+.noClick,
+label,
+.slider-value,
+img {
     user-select: none;
 }
 
@@ -73,23 +98,29 @@ body, html {
         transform: translateX(-50%) translateY(50vh) scale(1.8);
         text-shadow: 0px -0px 0px #7a7aea;
     }
+
     20% {
         text-shadow: 3px -3px 0px #7a7aea;
     }
+
     40% {
         text-shadow: 3px -3px 0px #7a7aea, -3px 3px 0px #5151f0;
     }
+
     60% {
         text-shadow: 3px -3px 0px #7a7aea, -3px 3px 0px #5151f0, 3px 3px 0px #6464f0;
     }
+
     80% {
         text-shadow: 3px -3px 0px #7a7aea, -3px 3px 0px #5151f0, 3px 3px 0px #6464f0, -3px -3px 0px #6464f0;
         transform: translateX(-50%) translateY(50vh) scale(2);
     }
-    90%{
+
+    90% {
         transform: translateX(-50%) translateY(50vh) scale(2);
     }
-    100%{
+
+    100% {
         text-shadow: 2px -2px 0px #7a7aea, -2px 2px 0px #5151f0, 2px 2px 0px #6464f0, -2px -2px 0px #6464f0;
         transform: translateX(-50%) translateY(2%);
     }
@@ -101,6 +132,7 @@ body, html {
         opacity: 0;
         transform: translateX(-50%) translateY(-20px);
     }
+
     to {
         opacity: 1;
         transform: translateX(-50%) translateY(0);
@@ -109,6 +141,7 @@ body, html {
 
 #dropzone {
     font-size: larger;
+    overflow: hidden;
     width: 100%;
     height: 100%;
     display: flex;
@@ -116,9 +149,15 @@ body, html {
     justify-content: center;
     cursor: pointer;
     position: absolute;
-    /* transition: fadeInDownfadeInDown 0.4s ease; */
+    text-shadow: -1.5px 1.5px 0px #7a7aea;
     animation: fadeInDown 3s both;
+    transform: translate(-50%, -50%);
     z-index: 4;
+}
+
+#dropzoneText {
+    position: absolute;
+    transition-duration: 100ms;
 }
 
 @keyframes fadeInDown {
@@ -127,10 +166,11 @@ body, html {
         transform: translateY(-20px);
     }
 
-    50%{
+    50% {
         opacity: 0;
         transform: translateY(-20px);
     }
+
     100% {
         opacity: 1;
         transform: translateY(0);
@@ -180,7 +220,7 @@ body, html {
     background: rgba(255, 255, 255, 0.048);
     padding: 5px 10px;
     border-radius: 10px;
-    z-index: 420;
+    z-index: 42;
 }
 
 #gitfooter:hover {
@@ -195,13 +235,18 @@ body, html {
     right: 45%;
     animation: float 4s infinite alternate ease-in-out;
     transition: bottom 80s ease-in-out;
-    transition-duration: 100ms; 
+    transition-duration: 100ms;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -webkit-crisp-edges;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
 }
 
 @keyframes float {
     from {
         transform: scale(0.8);
     }
+
     to {
         transform: scale(1.1);
     }
@@ -296,7 +341,7 @@ button:hover {
     transform: scale(1.05);
 }
 
-#presets{
+#presets {
     display: flex;
     align-items: center;
     margin: 10px 2px;
@@ -320,7 +365,7 @@ button:hover {
     z-index: 1000;
 }
 
-.context-button{
+.context-button {
     background-color: #6464f042;
     padding: 3px 3px 3px 3px;
     margin: 2px 0;
@@ -328,7 +373,7 @@ button:hover {
     width: 160px;
 }
 
-#tooltip{
+#tooltip {
     position: absolute;
     align-content: center;
     text-align: center;

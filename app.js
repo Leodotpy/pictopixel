@@ -2,16 +2,18 @@ let originalImage = null;
 let imageCanvas = document.getElementById('canvas');
 let imageCtx = imageCanvas.getContext('2d');
 let dropzone = document.getElementById('dropzone');
+let dropzoneText = document.getElementById('dropzoneText');
 var controls = document.getElementById('controls');
 
 let statslabel = document.getElementById('statslabel');
 let hasImgLoaded = false;
 let tooltipShown = false;
 let mademove = false;
+let defaultscale = 1;
 
 
 // JS enabled so swap the dropzone text
-dropzone.textContent = "Drop or Click to Load Image";
+dropzoneText.textContent = "Drop or Click to Load Image";
 
 function dropzoneClickHandler() {
     let input = document.createElement('input');
@@ -29,6 +31,35 @@ dropzone.addEventListener('click', dropzoneClickHandler);
 document.addEventListener('dragover', function (e) {
     e.preventDefault();
 });
+
+
+// Follow mouse cursor
+function createMouseFollower(element, pullFactor = 0.1) {
+    return function (e) {
+        if (element) {
+            // Get the current position of the element
+            let elemRect = element.getBoundingClientRect();
+
+            // Calculate the center of the element
+            let elemCenterX = elemRect.left + (elemRect.width / 2);
+            let elemCenterY = elemRect.top + (elemRect.height / 2);
+
+            // Calculate the distance between the mouse and the center of the element
+            let deltaX = e.clientX - elemCenterX;
+            let deltaY = e.clientY - elemCenterY;
+
+            // Apply the translation based on the pullFactor
+            let translateX = deltaX * pullFactor;
+            let translateY = deltaY * pullFactor;
+
+            // Apply the transformation to the element
+            element.style.transform = `translate(${translateX}px, ${translateY}px)`;
+        }
+    }
+}
+
+let mouseFollowerForDropzoneText = createMouseFollower(dropzoneText, 0.05);
+document.addEventListener('mousemove', mouseFollowerForDropzoneText);
 
 document.addEventListener('drop', function (e) {
     e.preventDefault();
@@ -111,7 +142,8 @@ function loadImage(file) {
     reader.onload = function (event) {
         originalImage = new Image();
         originalImage.onload = function () {
-            dropzone.textContent = "";
+            dropzoneText.textContent = "";
+            document.removeEventListener('mousemove', mouseFollowerForDropzoneText);
 
             // Reset the canvas dimensions and clear it
             imageCanvas.width = originalImage.width;
@@ -143,6 +175,8 @@ function loadImage(file) {
                     scale = MIN_CANVAS_HEIGHT / imageCanvas.height;
                 }
             }
+
+            defaultscale = scale;
 
             updateCanvasTransform();
 
@@ -265,26 +299,33 @@ function applyPreset(preset) {
         case "gameGuy":
             document.getElementById('downscale').value = "16";
             document.getElementById('brightness').value = "110";
-            document.getElementById('contrast').value = "100";
+            document.getElementById('contrast').value = "170";
             document.getElementById('saturation').value = "0";
             document.getElementById('paletteSize').value = "3";
             break;
+        case "gameGuyColor":
+            document.getElementById('downscale').value = "16";
+            document.getElementById('brightness').value = "105";
+            document.getElementById('contrast').value = "200";
+            document.getElementById('saturation').value = "75";
+            document.getElementById('paletteSize').value = "5";
+            break;
         case "vintage":
-            document.getElementById('downscale').value = "2";
+            // document.getElementById('downscale').value = "2";
             document.getElementById('brightness').value = "90";
             document.getElementById('contrast').value = "130";
             document.getElementById('saturation').value = "80";
             document.getElementById('paletteSize').value = "64";
             break;
         case "highContrast":
-            document.getElementById('downscale').value = "1";
+            // document.getElementById('downscale').value = "1";
             document.getElementById('brightness').value = "100";
             document.getElementById('contrast').value = "150";
             document.getElementById('saturation').value = "100";
             document.getElementById('paletteSize').value = "256";
             break;
         case "desaturated":
-            document.getElementById('downscale').value = "1";
+            // document.getElementById('downscale').value = "1";
             document.getElementById('brightness').value = "100";
             document.getElementById('contrast').value = "100";
             document.getElementById('saturation').value = "50";
@@ -332,7 +373,7 @@ function zoomOut(amount = 0.2) {
 }
 
 function zoomReset() {
-    scale = 1;
+    scale = defaultscale;
     translateX = 0;
     translateY = 0;
     updateCanvasTransform();
@@ -483,8 +524,8 @@ document.getElementById("gitfooter").addEventListener('click', function (e) {
 });
 
 // For the love of coding
-const hearts = ["❤️", "💜", "💙", "💚", "💛", "🧡"];
-let currentIndex = 0;
+let hueValue = 0;
+let currentIndex = 1;
 let heartscale = 1;
 let resetTimer;
 
@@ -493,14 +534,14 @@ document.getElementById("heart").addEventListener('mouseover', function (e) {
     clearTimeout(resetTimer);
 
     // Update the index
-    currentIndex = (currentIndex + 1) % hearts.length;
+    hueValue += 45
 
     // Set the new heart color
-    document.getElementById("heart").textContent = hearts[currentIndex];
+    document.getElementById("heart").style.filter = `hue-rotate(${hueValue}deg)`;
     document.getElementById("heart").style.animation = "none";
     heartscale += 0.2;
     document.getElementById("heart").style.transform = `scale(${heartscale})`;
-    document.getElementById("heart").style.bottom = `${heartscale * 20}%`;
+    document.getElementById("heart").style.bottom = `${heartscale * 30}%`;
 });
 
 document.getElementById("heart").addEventListener('mouseout', function (e) {
@@ -508,17 +549,32 @@ document.getElementById("heart").addEventListener('mouseout', function (e) {
     resetTimer = setTimeout(function () {
         // Float the heart off the screen
         document.getElementById("heart").style.transition = "3000ms";
-        document.getElementById("heart").style.bottom = "180vh"; // Ensure it's off screen
+        document.getElementById("heart").style.bottom = "180vh";
 
         // After 2 seconds (same as the transition time), reset the heart's properties
         setTimeout(function () {
-            heartscale = 1; // Reset the scale
-            currentIndex = (currentIndex + 1) % hearts.length;
-            document.getElementById("heart").textContent = hearts[currentIndex];
+            heartscale = 1;
+            hueValue += 45;
+            document.getElementById("heart").style.filter = `hue-rotate(${hueValue}deg)`;
             document.getElementById("heart").style.transition = "0ms";
             document.getElementById("heart").style.transform = `scale(${heartscale})`;
             document.getElementById("heart").style.bottom = "14%";
-
         }, 3000);
     }, 2000);
 });
+
+// Fetch total page views from GoatCounter
+function fetchViews() {
+    fetch('https://pixelgoat.goatcounter.com/api/v0/count', {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('viewCount').textContent = "View Count: " + data.totalHits;
+        })
+        .catch(error => console.error('Error fetching views:', error));
+}
+
+fetchViews();

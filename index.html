@@ -6,6 +6,8 @@
     <meta property="og:description"
         content="An image tool that allows you to quickly and easily perform downscaling, color palette limiting, and other useful pixel art effects." />
     <meta property="og:url" content="https://leodotpy.github.io/PicToPixel/" />
+    <meta name="description"
+        content="Pic To Pixel - A unique tool to convert your images into pixel art. Downscale images, limit color palettes, and more!">
     <meta http-equiv="cache-control" content="no-cache">
     <meta http-equiv="expires" content="0">
     <meta http-equiv="pragma" content="no-cache">
@@ -24,23 +26,38 @@
     <title>Pic To Pixel | Convert Images to Pixel Art</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@300&display=swap" rel="stylesheet">
+    <script type="application/ld+json">
+        {
+          "@context": "http://schema.org",
+          "@type": "WebApplication",
+          "name": "Pic To Pixel",
+          "url": "https://leodotpy.github.io/PicToPixel/",
+          "description": "An image tool that allows downscaling, color palette limiting, and pixel art effects.",
+          "applicationCategory": "PhotoEditor"
+        }
+    </script>
+    <script data-goatcounter="https://pixelgoat.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
 
 <body>
-
-    <div id="dropzone" class="noClick">psst... javascript is needed to run this site :D</div>
+    <div id="dropzone" class="noClick">
+        <a id="dropzoneText">
+            psst... javascript is needed to run this site :D
+        </a>
+    </div>
     <div id="exampleImagesContainer">
         <a id="exampleImagesContainerTip" style="text-align: center; white-space: nowrap;">Example Images</a>
-        <img src="https://raw.githubusercontent.com/Leodotpy/PicToPixel/main/res/imgs/example1.png"
-            class="exampleImage" alt="Example 1"
+        <img src="https://raw.githubusercontent.com/Leodotpy/PicToPixel/main/res/imgs/example1.png" class="exampleImage"
+            alt="Example 1"
             data-image-path="https://raw.githubusercontent.com/Leodotpy/PicToPixel/main/res/imgs/example1.png">
-        <img src="https://raw.githubusercontent.com/Leodotpy/PicToPixel/main/res/imgs/example2.png"
-            class="exampleImage" alt="Example 2"
+        <img src="https://raw.githubusercontent.com/Leodotpy/PicToPixel/main/res/imgs/example2.png" class="exampleImage"
+            alt="Example 2"
             data-image-path="https://raw.githubusercontent.com/Leodotpy/PicToPixel/main/res/imgs/example2.png">
-        <img src="https://raw.githubusercontent.com/Leodotpy/PicToPixel/main/res/imgs/example3.png"
-            class="exampleImage" alt="Example 3"
+        <img src="https://raw.githubusercontent.com/Leodotpy/PicToPixel/main/res/imgs/example3.png" class="exampleImage"
+            alt="Example 3"
             data-image-path="https://raw.githubusercontent.com/Leodotpy/PicToPixel/main/res/imgs/example3.png">
     </div>
+    <a id="viewcount">View Count: 83</a>
     <div id="controls">
         <div class="slider-container">
             <label for="downscale" title="Adjusts the image resolution by decreasing pixel density.">Downscale:</label>
@@ -89,6 +106,7 @@
             <select id="presets">
                 <option value="default">Default</option>
                 <option value="gameGuy">GameGuy™</option>
+                <option value="gameGuyColor">GameGuy™ Color™</option>
                 <option value="vintage">Vintage</option>
                 <option value="highContrast">High Contrast</option>
                 <option value="desaturated">Desaturated</option>
@@ -116,9 +134,9 @@
 
     <a id="statslabel" class="noClick">0</a>
     <span id="gitfooter" class="noClick" style="z-index: 101;">
-        <a style="margin-right: 10px;">Made with</a>
-        <a id="heart">💜</a>
-        <a>on github</a>
+        <a>Made with</a>
+        <img id="heart" src="https://raw.githubusercontent.com/Leodotpy/PicToPixel/main/res/imgs/heart.png" />
+        <a style="margin-left: 14px;">on github</a>
     </span>
     <div id="customContextMenu" class="controls" style="display: none;">
         <button class="context-button" id="loadNew">Load New Image</button>
@@ -130,8 +148,6 @@
 
     <div class="pixelgrid">
     </div>
-
-
 </body>
 
 <script src="app.js"></script>
