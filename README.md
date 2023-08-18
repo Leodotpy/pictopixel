@@ -7,7 +7,7 @@ Pic To Pixel is a unique tool designed to convert your images into mesmerizing p
 <table align="center">
     <thead>
         <tr>
-            <th colspan="2">Example Image 1 Comparison</th>
+            <th colspan="2">Example Image Comparison</th>
         </tr>
     </thead>
     <tbody>
