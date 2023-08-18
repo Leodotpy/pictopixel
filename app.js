@@ -523,6 +523,10 @@ document.getElementById("gitfooter").addEventListener('click', function (e) {
     window.open("https://github.com/Leodotpy/PicToPixel").focus();
 });
 
+document.getElementById("coffeefooter").addEventListener('click', function (e) {
+    window.open("https://www.buymeacoffee.com/leodotpy").focus();
+});
+
 // For the love of coding
 let hueValue = 0;
 let currentIndex = 1;

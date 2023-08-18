@@ -227,6 +227,23 @@ img {
     cursor: pointer;
 }
 
+#coffeefooter {
+    font-size: smaller;
+    position: absolute;
+    bottom: 1%;
+    right: 1px;
+    background: rgba(255, 255, 255, 0.048);
+    padding: 5px 10px;
+    border-radius: 10px;
+    z-index: 42;
+    filter: hue-rotate(233deg) brightness(0.8) contrast(0.78);
+    transform: scale(0.4) translateY(-15px) translateX(65%);
+}
+
+#coffeefooter:hover {
+    cursor: pointer;
+}
+
 #heart {
     transform: scale(1);
     position: absolute;
