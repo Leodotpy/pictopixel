@@ -69,6 +69,20 @@ document.addEventListener('drop', function (e) {
     }
 });
 
+// Paste image functionality
+document.addEventListener('paste', function(e) {
+    // Get the first item from the clipboard
+    var items = (event.clipboardData || event.originalEvent.clipboardData).items;
+    for (var index in items) {
+        var item = items[index];
+        if (item.kind === 'file') {
+            var blob = item.getAsFile();
+            loadImage(blob);
+            break;
+        }
+    }
+});
+
 document.addEventListener("DOMContentLoaded", function () {
     const exampleImages = document.querySelectorAll('.exampleImage');
     exampleImages.forEach(function (imageElem) {
